@@ -25,9 +25,10 @@ func UpdateCheck(scriptName, scriptVersoin, pathOfMain string) error {
 	}
 
 	if version == scriptVersoin {
+		log.Println("You have The latest version of The sctipt. Continue...")
 		return nil
 	} else {
-		log.Printf("Finded new version of script.\n\n%v >>> %v \n\nNews:\n%v\n\nDownloadind...\n", scriptVersoin, version, news)
+		log.Printf("Finded new version of script.\n\nNews:\n%v\n\n\n%v >>> %v\nPress enter for download. ", news, scriptVersoin, version)
 
 		// parsing folder for create new repo
 		// nameForCreate, err := folderParce(pathOfMain)
