@@ -6,8 +6,9 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"os"
 	"os/exec"
+
+	gouseful "github.com/p0n41k/goUseful"
 )
 
 type ReleaseInfo struct {
@@ -29,32 +30,13 @@ func UpdateCheck(scriptName, scriptVersoin, pathOfMain string) error {
 		return nil
 	} else {
 		log.Printf("Finded new version of script.\n\nNews:\n%v\n\n\n%v >>> %v\nPress enter for download. ", news, scriptVersoin, version)
-
-		// parsing folder for create new repo
-		// nameForCreate, err := folderParce(pathOfMain)
-
-		// create new folder
-
-		// download
-		// err := DownoladNewScript(reposURLCloning)
-
-		_, _ = reposURLCloning, news
+		gouseful.InputScaner()
+		err := downloadInstall(reposURLCloning)
 		if err != nil {
-			return errors.New("Can`t download new version")
+			return errors.New("Can`t download new version. You can download there: " + reposURLCloning)
 		}
 
-		// os read new script
-
-		// os write new
-
-		// parse old
-
-		// rm old
-
-		// start new
-		// StartTheScript
-
-		return nil
+		return errors.New("")
 	}
 }
 
@@ -83,20 +65,32 @@ func githubRepoParse(reposURL string) (string, string, error) {
 	return releaseInfo.TagName, releaseInfo.Body, nil
 }
 
-func folderParce(pathOfMain string) (string, error) {
-	filesFS, err := os.ReadDir(pathOfMain)
-
-	files := make([]string, len(filesFS))
-	for i := 0; i < len(filesFS); i++ {
-		files[i] = filesFS[i].Name()
-	}
-
-	return "", err
-}
-
 func StartTheScript() {
 	cmd := exec.Command("chmod", "+x", "*")
 	_, _ = cmd.CombinedOutput()
 	cmd = exec.Command("./reg")
 	_, _ = cmd.CombinedOutput()
+}
+
+func downloadInstall(url string) error {
+	cmd, err := gouseful.Bash([]string{
+		"rm -r -f ./FastReg/",
+		"git clone " + url,
+	})
+	if err != nil {
+		return err
+	}
+	log.Println(cmd)
+
+	cmd, err = gouseful.Bash([]string{
+		"mv ./FastReg/reg .",
+		"mv ./FastReg/README.md .",
+		"rm -r -f ./FastReg",
+	})
+	if err != nil {
+		return err
+	}
+	log.Println(cmd)
+
+	return err
 }
