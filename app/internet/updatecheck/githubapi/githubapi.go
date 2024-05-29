@@ -1,0 +1,4 @@
+package githubapi
+
+func AppUpdateCheck() {
+}
